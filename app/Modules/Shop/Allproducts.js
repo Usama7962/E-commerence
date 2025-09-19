@@ -110,11 +110,11 @@ const AllProducts = ({ selectedCategory }) => {
                   <span className="text-base md:text-xl font-bold text-indigo-600">
                     ${product.price}
                   </span>
-                  <button 
+                  <button
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevent product card click
-                      const message = `Check out ${product.name}!\n\nPrice: $${product.price}\n\nDescription: ${product.description}`;
-                      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                      e.stopPropagation();
+                      const message = `Hi! I'm interested in this product:\n\nProduct: ${product.name}\nPrice: $${product.price}\nDescription: ${product.description}\n\nI'd like to know more about it.`;
+                      const whatsappUrl = `https://wa.me/923156396901?text=${encodeURIComponent(message)}`;
                       window.open(whatsappUrl, '_blank');
                     }}
                     className="text-green-600 hover:text-green-700 transition-colors"
