@@ -2,10 +2,17 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { getAddress, addAddress, updateAddress, deleteAddress } from "@/app/api/addressApi";
+import { useRouter } from "next/navigation";
+import { getCart } from "@/app/api/cartApi";
+import { ArrowLeft } from "lucide-react";
 
 const ShoppingAddress = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [addresses, setAddresses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [cart, setCart] = useState(null);
+  console.log("cart", cart);
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -15,7 +22,27 @@ const ShoppingAddress = () => {
     postalCode: "",
     state: "",
   });
+  const subtotal = cart?.totalPrice || 0;
+  const deliveryCharge = 5;
+  const grandTotal = subtotal + deliveryCharge;
   const [editingId, setEditingId] = useState(null);
+   const fetchCart = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          router.push("/login");
+          return;
+        }
+        const res = await getCart(token);
+        setCart(res);
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+  
 
   // ✅ Fetch all addresses
   const fetchAddresses = async () => {
@@ -29,6 +56,7 @@ const ShoppingAddress = () => {
 
   useEffect(() => {
     fetchAddresses();
+    fetchCart();
   }, []);
 
   // ✅ Handle form change
@@ -83,11 +111,21 @@ const ShoppingAddress = () => {
     });
     setEditingId(address._id);
   };
+  const handleDeliverHere = () => {
+    router.push("/revieworder");
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
       {/* Left: Addresses */}
       <div className="lg:col-span-2 space-y-6">
+         <button
+      onClick={() => router.back()}
+      className="flex items-center gap-2 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+    >
+      <ArrowLeft size={20} />
+      Back
+    </button>
         <h2 className="text-2xl font-bold">Shipping Address</h2>
 
         {/* Saved Addresses */}
@@ -128,7 +166,9 @@ const ShoppingAddress = () => {
           )}
         </div>
 
-        <button className="mt-4 px-6 py-2 bg-black text-white rounded-lg">
+        <button className="mt-4 px-6 py-2 bg-black text-white rounded-lg"
+          onClick={ handleDeliverHere}
+        >
           Deliver Here
         </button>
 
@@ -221,22 +261,28 @@ const ShoppingAddress = () => {
       </div>
 
       {/* Right: Order Summary */}
-      <div className="border rounded-lg p-6 shadow-sm">
-        <div>
-        <h3 className="font-semibold text-lg mb-4">Order Summary</h3>
+       <div className=" h-fit border p-6 rounded-lg bg-gray-50">
+        <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
+
         <div className="flex justify-between mb-2">
-          <span>Subtotal ({searchParams?.get('items') || 0} items)</span>
-          <span>Rs. {searchParams?.get('subtotal') || 0}</span>
+          <span>Subtotal</span>
+          <span className="font-semibold">${subtotal}</span>
         </div>
+
+       
+
         <div className="flex justify-between mb-2">
           <span>Delivery Charge</span>
-          <span>Rs. {searchParams?.get('shipping') || 0}</span>
+          <span>${deliveryCharge}</span>
         </div>
-        <div className="flex justify-between font-bold text-lg">
+
+        <hr className="my-3" />
+
+        <div className="flex justify-between font-bold text-lg mb-4">
           <span>Grand Total</span>
-          <span>Rs. {searchParams?.get('total') || 0}</span>
+          <span>${grandTotal}</span>
         </div>
-      </div>
+
       
       </div>
     </div>

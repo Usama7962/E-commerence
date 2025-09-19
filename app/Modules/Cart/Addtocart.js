@@ -3,17 +3,15 @@ import React, { useEffect, useState } from "react";
 import { getCart, removeFromCart } from "@/app/api/cartApi";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { removeItemFromCart, fetchCartItems } from "@/app/redux/cartSlice";
 
 const Addtocart = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [discount, setDiscount] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState(0);
-  const [selectedItems, setSelectedItems] = useState([]); // ✅ track selected items
 
+  // ✅ Cart fetch
   const fetchCart = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -23,60 +21,47 @@ const Addtocart = () => {
       }
       const res = await getCart(token);
       setCart(res);
-      dispatch(fetchCartItems()); // Update Redux store
-
-      // ✅ default: select all items
-      setSelectedItems([]);
     } catch (error) {
       console.error("Error fetching cart:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-useEffect(() => {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchCart();
   }, [router]);
-    const handleRemove = async (productId) => {
-      console.log("Removing product:", productId);
+
+  // ✅ Remove item
+  const handleRemove = async (productId) => {
     try {
-      const token = localStorage.getItem("token"); // token le liya
-      await removeFromCart(productId, token);
-await fetchCart();
-      console.log("Product removed:", productId);
+      await removeFromCart(productId);
+      // frontend state update
+      setCart((prevCart) => ({
+        ...prevCart,
+        items: prevCart.items.filter((item) => item.product._id !== productId),
+        totalPrice: prevCart.items
+          .filter((item) => item.product._id !== productId)
+          .reduce((acc, item) => acc + item.product.price * item.quantity, 0),
+      }));
     } catch (error) {
       console.error("Error removing item:", error);
     }
   };
 
-  const handleApplyDiscount = () => {
-    if (discount === "FLAT50") {
-      setAppliedDiscount(50);
-    } else {
-      alert("Invalid coupon code");
-    }
-  };
-
-  const toggleSelect = (index) => {
-    if (selectedItems.includes(index)) {
-      setSelectedItems(selectedItems.filter((i) => i !== index));
-    } else {
-      setSelectedItems([...selectedItems, index]);
-    }
-  };
+  // const handleApplyDiscount = () => {
+  //   if (discount === "FLAT50") {
+  //     setAppliedDiscount(50);
+  //   } else {
+  //     alert("Invalid coupon code");
+  //   }
+  // };
 
   if (loading) return <div className="text-center py-10">Loading...</div>;
-  if (!cart || !cart.items?.length)
-    return <div className="text-center py-10">Your cart is empty.</div>;
+  if (!cart || !cart.items?.length) return <div className="text-center py-10">Your cart is empty.</div>;
 
-  // ✅ Calculate subtotal only for selected items
-  const selectedCartItems = cart.items.filter((_, i) =>
-    selectedItems.includes(i)
-  );
-  const subtotal = selectedCartItems.reduce(
-    (acc, item) => acc + item.product.price * item.quantity,
-    0
-  );
-  const deliveryCharge = selectedCartItems.length > 0 ? 5 : 0;
+  const subtotal = cart.totalPrice || 0;
+  const deliveryCharge = 5;
   const grandTotal = subtotal - appliedDiscount + deliveryCharge;
 
   return (
@@ -84,22 +69,21 @@ await fetchCart();
       {/* LEFT SIDE: Cart Items */}
       <div className="lg:col-span-2">
         <h2 className="text-2xl font-bold mb-6">Checkout</h2>
+        <div className="flex flex-row justify-between ">
+         <div className="w-[80%]"> <p>Product</p></div>
+        <div className="w-[20%] flex flex-row gap-4 mr-10">  
+          <p>Price</p>
+          <p>Quantity</p>
+          <p>Subtotal</p></div>
+        </div>
         <div className="space-y-6">
           {cart.items.map((item, index) => (
             <div
               key={index}
               className="flex items-center justify-between border-b pb-4"
             >
-              {/* ✅ Checkbox */}
-              <input
-                type="checkbox"
-                checked={selectedItems.includes(index)}
-                onChange={() => toggleSelect(index)}
-                className="mr-3 size-6 bg-orange-500 text-white"
-              />
-
               {/* Product info */}
-              <div className="flex items-center gap-4 flex-1">
+              <div className="flex items-center gap-4">
                 <img
                   src={item.product.imageUrl}
                   alt={item.product.name}
@@ -107,30 +91,28 @@ await fetchCart();
                 />
                 <div>
                   <h3 className="font-semibold">{item.product.name}</h3>
-                  <p className="text-gray-500 text-sm">
-                    Size: {item.selectedSize}
-                  </p>
+                  <p className="text-gray-500 text-sm">Size: {item.selectedSize}</p>
                 </div>
               </div>
 
-              {/* Price + Quantity + Subtotal */}
+              {/* Price + Quantity + Subtotal + Delete */}
               <div className="flex items-center gap-6">
-                <span className="font-semibold">Rs. {item.product.price}</span>
+                <span className="font-semibold">${item.product.price}</span>
 
                 <div className="flex items-center border rounded">
-                  <button className="px-3">-</button>
                   <span className="px-3">{item.quantity}</span>
-                  <button className="px-3">+</button>
                 </div>
 
                 <span className="font-semibold">
-                  Rs. {item.product.price * item.quantity}
+                  ${item.product.price * item.quantity}
                 </span>
+
+                {/* 🗑️ Delete icon */}
                 <button
                   onClick={() => handleRemove(item.product._id)}
                   className="text-red-500 hover:text-red-700"
                 >
-                  <Trash2 size={20} /> {/* ✅ Trash Icon */}
+                  <Trash2 size={20} />
                 </button>
               </div>
             </div>
@@ -143,33 +125,29 @@ await fetchCart();
         <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
 
         <div className="flex justify-between mb-2">
-          <span>Subtotal ({selectedCartItems.length} items)</span>
-          <span className="font-semibold">Rs. {subtotal}</span>
+          <span>Subtotal</span>
+          <span className="font-semibold">${subtotal}</span>
         </div>
 
+       
 
         <div className="flex justify-between mb-2">
-          <span>Shipping Fee</span>
-          <span>Rs. {deliveryCharge}</span>
+          <span>Delivery Charge</span>
+          <span>${deliveryCharge}</span>
         </div>
 
         <hr className="my-3" />
 
         <div className="flex justify-between font-bold text-lg mb-4">
-          <span>Total</span>
-          <span>Rs. {grandTotal}</span>
+          <span>Grand Total</span>
+          <span>${grandTotal}</span>
         </div>
 
         <button
-          disabled={selectedCartItems.length === 0}
-          onClick={() => router.push(`/address?subtotal=${subtotal}&items=${selectedCartItems.length}&shipping=${deliveryCharge}&total=${grandTotal}`)}
-          className={`w-full py-3 rounded-lg ${
-            selectedCartItems.length === 0
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-orange-500 text-white hover:bg-orange-600"
-          }`}
+          onClick={() => router.push("/address")}
+          className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800"
         >
-          Proceed to Checkout ({selectedCartItems.length})
+          Proceed to Checkout
         </button>
       </div>
     </div>
