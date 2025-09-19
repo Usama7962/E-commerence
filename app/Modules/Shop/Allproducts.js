@@ -68,14 +68,8 @@ const AllProducts = ({ selectedCategory }) => {
           {products.map((product) => (
             <div
               key={product._id}
-              onClick={(e) => {
-                e.preventDefault();
-                const formattedMessage = `🛍️ *Check out this amazing product!*\n\n📦 *Product Name:* ${product.name}\n\n📝 *Description:* ${product.description}\n\n💲 *Price:* $${product.price}\n\n🔗 *Product Link:* ${window.location.origin}/products/${product._id}\n\n👋 I'm interested in learning more about this product!`;
-                
-                const whatsappUrl = `https://wa.me/923156396901?text=${encodeURIComponent(formattedMessage)}`;
-                window.open(whatsappUrl, '_blank');
-              }}
-              className="relative group bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition-all duration-300 flex flex-col cursor-pointer"
+              onClick={() => router.push(`/products/${product._id}`)}
+              className="relative group bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition-all duration-300 flex flex-col"
             >
               {/* Image */}
               <div className="w-full aspect-[4/3] overflow-hidden relative">
