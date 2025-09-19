@@ -4,6 +4,7 @@ import { getProducts, getProductsByCategory } from "../../api/productApi.js";
 import { Heart, ShoppingCart } from "lucide-react";
 import { toggleWishlist, getWishlist } from "../../api/wishlistApi.js";
 import { useRouter } from "next/navigation";
+import { FaWhatsapp } from "react-icons/fa";
 
 const AllProducts = ({ selectedCategory }) => {
   const [products, setProducts] = useState([]);
@@ -102,13 +103,24 @@ const AllProducts = ({ selectedCategory }) => {
                 <p className="font-semibold text-gray-900 text-sm md:text-lg">
                   {product.name}
                 </p>
-                <p className="text-xs md:text-sm text-gray-600 flex-1">
+                <p className="text-xs md:text-sm  text-gray-600 flex-1">
                   {product.description}
                 </p>
-                <div className="mt-1 flex items-center gap-2">
+                <div className="mt-1 flex items-center justify-between  gap-2">
                   <span className="text-base md:text-xl font-bold text-indigo-600">
                     ${product.price}
                   </span>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent product card click
+                      const message = `Check out ${product.name}!\n\nPrice: $${product.price}\n\nDescription: ${product.description}`;
+                      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                      window.open(whatsappUrl, '_blank');
+                    }}
+                    className="text-green-600 hover:text-green-700 transition-colors"
+                  >
+                    <FaWhatsapp className="w-7 h-7" />
+                  </button>
                 </div>
               </div>
             </div>
