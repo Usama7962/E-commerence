@@ -2,12 +2,18 @@
 import React, { useEffect, useState } from "react";
 import { getCart } from "@/app/api/cartApi";
 import { getAddress } from "@/app/api/addressApi";
+import { placeOrder } from "@/app/api/orderApi"; // ✅ order api import
+import { useSearchParams, useRouter } from "next/navigation";
 
 const Revieworder = () => {
   const [cart, setCart] = useState(null);
-  const [addresses, setAddresses] = useState([]);
-  console.log("addresses", addresses);
+  const [address, setAddress] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false); // ✅ modal state
+  const [placing, setPlacing] = useState(false); // ✅ loading while placing order
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   // ✅ Date calculation (today + 4 days)
   const getEstimatedDeliveryDate = () => {
@@ -36,10 +42,10 @@ const Revieworder = () => {
     }
   };
 
-  const fetchAddresses = async () => {
+  const fetchAddress = async () => {
     try {
       const res = await getAddress();
-      setAddresses(res);
+      setAddress(res);
     } catch (err) {
       console.error(err);
     } finally {
@@ -49,8 +55,28 @@ const Revieworder = () => {
 
   useEffect(() => {
     fetchCart();
-    fetchAddresses();
+    fetchAddress();
   }, []);
+
+  // ✅ Place Order Handler
+  const handlePlaceOrder = async () => {
+    if (address.length === 0) {
+      alert("Please add an address before placing order");
+      return;
+    }
+
+    try {
+      setPlacing(true);
+      const res = await placeOrder(address[0]._id); // ✅ address ka id pass
+      console.log("Order placed:", res);
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Failed to place order");
+    } finally {
+      setPlacing(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -102,12 +128,11 @@ const Revieworder = () => {
         {/* Address */}
         <div>
           <h3 className="text-lg font-bold">Shipping Address</h3>
-          {addresses.length > 0 ? (
+          {address.length > 0 ? (
             <div className="mt-2">
-              <p className="font-semibold">{addresses[0].fullName}</p>
+              <p className="font-semibold">{address[0].fullName}</p>
               <p>
-                {addresses[0].city}, {addresses[0].address}{" "}
-                {addresses[0].phone}
+                {address[0].city}, {address[0].address} {address[0].phone}
               </p>
             </div>
           ) : (
@@ -137,10 +162,48 @@ const Revieworder = () => {
           <span>${grandTotal}</span>
         </div>
 
-        <button className="w-full mt-5 bg-black text-white py-3 rounded-lg hover:bg-gray-800">
-          Place Order
+        <button
+          onClick={handlePlaceOrder}
+          disabled={placing}
+          className="w-full mt-5 bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50"
+        >
+          {placing ? "Placing Order..." : "Place Order"}
         </button>
       </div>
+
+      {/* ✅ Confirmation Modal */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-2xl shadow-xl max-w-sm text-center">
+            <div className="flex justify-center mb-4">
+              <div className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-full">
+                🛍️
+              </div>
+            </div>
+            <h2 className="text-xl font-semibold">Your order is confirmed</h2>
+            <p className="text-gray-600 mt-2 text-sm">
+              Thanks for shopping! Your order hasn’t shipped yet, but we will
+              send you an email when it’s done.
+            </p>
+
+            {/* Buttons */}
+            <div className="mt-5 space-y-2">
+              <button
+                onClick={() => router.push("/orders")}
+                className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800"
+              >
+                View Order
+              </button>
+              <button
+                onClick={() => router.push("/")}
+                className="w-full border border-gray-300 py-2 rounded-lg hover:bg-gray-100"
+              >
+                Back to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
