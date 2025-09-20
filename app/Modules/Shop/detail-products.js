@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { addItemToCart } from "@/app/redux/cartSlice";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import Footer from "@/app/component/Footer/Footer";
 
 const ProductDetailPage = ({ productId }) => {
   const dispatch = useDispatch();
@@ -71,6 +72,7 @@ const ProductDetailPage = ({ productId }) => {
   };
 
   return (
+    <>
     <div className="w-full flex flex-col justify-center items-center">
       <Navbar />
 
@@ -87,8 +89,8 @@ const ProductDetailPage = ({ productId }) => {
         </div>
 
         {/* RIGHT: Product Info */}
-        <div className="space-y-4">
-          <h1 className="text-2xl font-bold">{productData.name}</h1>
+        <div className="space-y-4 ">
+          <h1 className="text-2xl font-bold uppercase">{productData.name}</h1>
           <p className="text-gray-600">{productData.subtitle}</p>
 
           {/* Ratings */}
@@ -176,6 +178,8 @@ const ProductDetailPage = ({ productId }) => {
       <Relativeproduct category={productData.category}/>
       
     </div>
+    <Footer />
+    </>
   );
 };
 

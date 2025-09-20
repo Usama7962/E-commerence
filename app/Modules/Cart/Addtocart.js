@@ -65,47 +65,57 @@ const Addtocart = () => {
   const grandTotal = subtotal - appliedDiscount + deliveryCharge;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
+    <div className="max-w-6xl  mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
       {/* LEFT SIDE: Cart Items */}
       <div className="lg:col-span-2">
         <h2 className="text-2xl font-bold mb-6">Checkout</h2>
-        <div className="flex flex-row justify-between ">
-         <div className="w-[80%]"> <p>Product</p></div>
-        <div className="w-[20%] flex flex-row gap-4 mr-10">  
-          <p>Price</p>
-          <p>Quantity</p>
-          <p>Subtotal</p></div>
+        <div className="hidden md:flex flex-row justify-between mb-4">
+          <div className="w-[60%] md:w-[50%]"><p>Product</p></div>
+          <div className="w-[40%] md:w-[50%] flex flex-row justify-end gap-4 md:gap-8 pr-12">  
+            <p>Price</p>
+            <p>Quantity</p>
+            <p>Subtotal</p>
+          </div>
         </div>
         <div className="space-y-6">
           {cart.items.map((item, index) => (
             <div
               key={index}
-              className="flex items-center justify-between border-b pb-4"
+              className="flex flex-col md:flex-row items-start md:items-center justify-between border-b pb-4 gap-4 md:gap-0"
             >
               {/* Product info */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4  w-full md:w-[70%]">
                 <img
                   src={item.product.imageUrl}
                   alt={item.product.name}
                   className="w-16 h-16 object-cover rounded"
                 />
                 <div>
-                  <h3 className="font-semibold">{item.product.name}</h3>
+                  <h3 className="font-semibold ">{item.product.name}</h3>
                   <p className="text-gray-500 text-sm">Size: {item.selectedSize}</p>
                 </div>
               </div>
 
               {/* Price + Quantity + Subtotal + Delete */}
-              <div className="flex items-center gap-6">
-                <span className="font-semibold">${item.product.price}</span>
+              <div className="flex items-start justify-between  w-full md:w-[40%] gap-4 md:gap-8">
+                <div className="flex items-center gap-2 md:hidden">
+                  <p className="text-gray-500">Price:</p>
+                </div>
+                <span className="font-semibold flex items-start ">${item.product.price}</span>
 
-                <div className="flex items-center border rounded">
-                  <span className="px-3">{item.quantity}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-500 md:hidden">Qty:</span>
+                  <div className="flex items-center border rounded">
+                    <span className="px-3">{item.quantity}</span>
+                  </div>
                 </div>
 
-                <span className="font-semibold">
-                  ${item.product.price * item.quantity}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-500 md:hidden">Total:</span>
+                  <span className="font-semibold">
+                    ${item.product.price * item.quantity}
+                  </span>
+                </div>
 
                 {/* 🗑️ Delete icon */}
                 <button
