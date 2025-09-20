@@ -4,6 +4,7 @@ import { getAllOrders, deleteOrder } from "../../api/orderApi.js";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  console.log("orders:",orders)
   const [loading, setLoading] = useState(true);
 
   // modal ke liye states
@@ -142,6 +143,7 @@ const Orders = () => {
             <h3 className="font-semibold text-sm sm:text-base">Items</h3>
             <ul className="space-y-3 mb-4">
               {selectedOrder.items.map((item, index) => (
+                
                 <li
                   key={index}
                   className="flex items-center gap-3 text-sm sm:text-base"

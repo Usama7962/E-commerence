@@ -21,7 +21,7 @@ const ProductDetailPage = ({ productId }) => {
   const sizes = [
     { label: "S", inStock: true },
     { label: "M", inStock: true },
-    { label: "L", inStock: false },
+    { label: "L", inStock: true },
     { label: "XL", inStock: true },
   ];
 
@@ -48,7 +48,8 @@ const ProductDetailPage = ({ productId }) => {
         return;
       }
 
-      const result = await dispatch(addItemToCart(productData._id, quantity));
+      const result = await dispatch(addItemToCart(productData._id, quantity,selectedSize));
+     
       toast.success("Product added to cart!");
       return result;
     } catch (error) {

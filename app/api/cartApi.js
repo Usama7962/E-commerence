@@ -9,10 +9,10 @@ export const getCart = async (token) => {
   return res.data;
 };
 
-export const addToCart = async (productId, quantity, token) => {
+export const addToCart = async (productId, quantity, selectedSize, token) => {
   const res = await axios.post(
     `${BASE_URL}/add`,
-    { productId, quantity },
+    { productId, quantity, selectedSize },
     { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.data;

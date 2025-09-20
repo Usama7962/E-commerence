@@ -40,13 +40,13 @@ export const fetchCartItems = () => async (dispatch, getState) => {
 };
 
 // Thunk action to add item to cart
-export const addItemToCart = (productId, quantity) => async (dispatch, getState) => {
+export const addItemToCart = (productId, quantity,selectedSize) => async (dispatch, getState) => {
   const { token } = getState().auth;
   if (!token) return;
 
   try {
     dispatch(setLoading(true));
-    await addToCart(productId, quantity, token);
+    await addToCart(productId, quantity,selectedSize, token);
     // Fetch updated cart after adding item
     dispatch(fetchCartItems());
   } catch (error) {
