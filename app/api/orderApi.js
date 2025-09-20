@@ -25,3 +25,10 @@ export const getAllOrders = async () => {
 
   return res.data; // { success: true, orders: [...] }
 };
+export const deleteOrder = async (orderId) => {
+  const token = localStorage.getItem("token");
+  const res = await axios.delete(`${BASE_URL}/${orderId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
