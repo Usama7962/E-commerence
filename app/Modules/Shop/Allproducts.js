@@ -119,7 +119,7 @@ const AllProducts = ({ selectedCategory }) => {
                     }}
                     className="text-green-600 hover:text-green-700 transition-colors"
                   >
-                    <FaWhatsapp className="w-7 h-7" />
+                    <FaWhatsapp className="w-7 h-7" />        
                   </button>
                 </div>
               </div>
