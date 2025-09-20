@@ -9,7 +9,8 @@ import { ArrowLeft } from "lucide-react";
 const ShoppingAddress = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [addresses, setAddresses] = useState([]);
+  const [address, setAddress] = useState([]);
+  console.log("address", address);
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState(null);
   console.log("cart", cart);
@@ -44,18 +45,18 @@ const ShoppingAddress = () => {
 
   
 
-  // ✅ Fetch all addresses
-  const fetchAddresses = async () => {
+  // ✅ Fetch all address
+  const fetchAddress = async () => {
     try {
       const res = await getAddress();
-      setAddresses(res);
+      setAddress(res);
     } catch (err) {
       console.error(err);
     }
   };
 
   useEffect(() => {
-    fetchAddresses();
+    fetchAddress();
     fetchCart();
   }, []);
 
@@ -83,7 +84,7 @@ const ShoppingAddress = () => {
         state: "",
       });
       setEditingId(null);
-      fetchAddresses();
+      fetchAddress();
     } catch (err) {
       console.error(err);
     }
@@ -93,7 +94,7 @@ const ShoppingAddress = () => {
   const handleDelete = async (id) => {
     try {
       await deleteAddress(id);
-      fetchAddresses();
+      fetchAddress();
     } catch (err) {
       console.error(err);
     }
@@ -117,7 +118,7 @@ const ShoppingAddress = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
-      {/* Left: Addresses */}
+      {/* Left: Address */}
       <div className="lg:col-span-2 space-y-6">
          <button
       onClick={() => router.back()}
@@ -128,10 +129,10 @@ const ShoppingAddress = () => {
     </button>
         <h2 className="text-2xl font-bold">Shipping Address</h2>
 
-        {/* Saved Addresses */}
+        {/* Saved Address */}
         <div className="grid sm:grid-cols-2 gap-4">
-          {addresses.length > 0 ? (
-            addresses.map((addr) => (
+          {address.length > 0 ? (
+            address.map((addr) => (
               <div
                 key={addr._id}
                 className="border rounded-lg p-4 shadow-sm flex flex-col justify-between"

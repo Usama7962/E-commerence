@@ -4,6 +4,7 @@ const BASE_URL = "http://localhost:5000/api/auth";
 
 // ✅ Signup
 export const signup = async (userData) => {
+  console.log("userData", userData);
   const res = await axios.post(`${BASE_URL}/signup`, userData);
   return res.data;
 };

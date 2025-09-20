@@ -18,7 +18,7 @@ const AdminSidebar = () => {
     { name: "Create Product", href: "/admin/create-product" },
     { name: "All Products", href: "/admin/all-products" },
     { name: "Users", href: "/admin/users" },
-    { name: "Orders", href: "/admin/orders" },
+    { name: "Orders", href: "/admin/order" },
   ];
 
   // 🔹 handle navigation (mobile dropdown links)
