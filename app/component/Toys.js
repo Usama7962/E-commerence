@@ -5,6 +5,8 @@ import { getProductsByCategory } from "../api/productApi";
 import { toggleWishlist, getWishlist } from "../api/wishlistApi";
 import Navbar from "./Navbar/Navbar.js";
 import { useRouter } from "next/navigation";
+import WhatsappBtn from "../Modules/Shop/Whatsappbtn";
+import Footer from "./Footer/Footer";
 
 
 const CategoryProducts = ({ category, title, icon }) => {
@@ -46,6 +48,7 @@ const CategoryProducts = ({ category, title, icon }) => {
   };
 
   return (
+    <>
     <div>
       <Navbar />
     <div className="mt-8 md:mt-0 p-4 md:p-8 bg-gray-50 min-h-screen">
@@ -99,10 +102,11 @@ const CategoryProducts = ({ category, title, icon }) => {
                 <p className="text-sm text-gray-600 flex-1">
                   {product.description}
                 </p>
-                <div className="mt-1 flex items-center gap-2">
+                <div className="mt-1 flex items-center gap-2 flex-row justify-between">
                   <span className="text-xl font-bold text-indigo-600">
                     ${product.price}
                   </span>
+                  <WhatsappBtn />
                 </div>
               </div>
             </div>
@@ -111,6 +115,8 @@ const CategoryProducts = ({ category, title, icon }) => {
       )}
     </div>
     </div>
+    <Footer />  
+    </>
   );
 };
 

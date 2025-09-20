@@ -5,6 +5,8 @@ import { getProductsByCategory } from "../api/productApi.js";
 import { toggleWishlist, getWishlist } from "../api/wishlistApi.js";
 import Navbar from "./Navbar/Navbar.js";
 import { useRouter } from "next/navigation";
+import WhatsappBtn from "../Modules/Shop/Whatsappbtn.js";
+import Footer from "./Footer/Footer.js";
 
 
 const Baby_Clothes = () => {
@@ -55,6 +57,7 @@ const handleToggle = async (productId) => {
 
 
   return (
+    <>
     <div >
       <Navbar/>
     <div className="mt-8 md:mt-0 p-4 md:p-8 bg-gray-50 min-h-screen">
@@ -110,10 +113,11 @@ const handleToggle = async (productId) => {
                 <p className="text-sm text-gray-600 flex-1">
                   {product.description}
                 </p>
-                <div className="mt-1 flex items-center gap-2">
+                <div className="mt-1 flex items-center gap-2 flex-row justify-between">
                   <span className="text-xl font-bold text-indigo-600">
                     ${product.price}
                   </span>
+                  <WhatsappBtn />
                 </div>
               </div>
             </div>
@@ -122,6 +126,8 @@ const handleToggle = async (productId) => {
       )}
     </div>
     </div>
+    <Footer />
+    </>
   );
 };
 

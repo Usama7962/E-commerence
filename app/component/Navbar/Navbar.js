@@ -36,12 +36,15 @@ const Navbar = () => {
     { name: "Contact", path: "/contact" },
     
   ];
+const handleClick=()=>{
+  window.location.href="/"
+}
 
   return (
     <div className="w-full px-6 md:px-12 flex justify-between items-center py-3">
       {/* Logo */}
       <div>
-        <img src="/image/Logo.svg" alt="logo" className="w-16 h-16" />
+        <img src="/image/Logo.svg" alt="logo" className="w-16 h-16" onClick={handleClick} />
       </div>
 
       {/* Desktop Links */}

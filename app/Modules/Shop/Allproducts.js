@@ -5,6 +5,7 @@ import { Heart, ShoppingCart } from "lucide-react";
 import { toggleWishlist, getWishlist } from "../../api/wishlistApi.js";
 import { useRouter } from "next/navigation";
 import { FaWhatsapp } from "react-icons/fa";
+import WhatsappBtn from "./Whatsappbtn.js";
 
 const AllProducts = ({ selectedCategory }) => {
   const [products, setProducts] = useState([]);
@@ -57,7 +58,7 @@ const AllProducts = ({ selectedCategory }) => {
 
   return (
     <div className="p-4 md:p-6">
-      <h1 className="text-xl md:text-2xl font-bold mb-6">All Products</h1>
+      <h1 className="text-xl md:text-2xl font-bold mb-6 ">All Products</h1>
 
       {products.length === 0 ? (
         <p className="text-gray-500 text-center text-lg">
@@ -110,17 +111,7 @@ const AllProducts = ({ selectedCategory }) => {
                   <span className="text-base md:text-xl font-bold text-indigo-600">
                     ${product.price}
                   </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const message = `Hi! I'm interested in this product:\n\nProduct: ${product.name}\nPrice: $${product.price}\nDescription: ${product.description}\n\nI'd like to know more about it.`;
-                      const whatsappUrl = `https://wa.me/923156396901?text=${encodeURIComponent(message)}`;
-                      window.open(whatsappUrl, '_blank');
-                    }}
-                    className="text-green-600 hover:text-green-700 transition-colors"
-                  >
-                    <FaWhatsapp className="w-7 h-7" />        
-                  </button>
+                 <WhatsappBtn />
                 </div>
               </div>
             </div>

@@ -5,6 +5,8 @@ import { getProductsByCategory } from "../api/productApi"; // ✅ import
 import Navbar from "./Navbar/Navbar.js";
 import { toggleWishlist, getWishlist } from "../api/wishlistApi";
 import { useRouter } from "next/navigation";
+import WhatsappBtn from "../Modules/Shop/Whatsappbtn";
+import Footer from "./Footer/Footer";
 
 
 const Man = () => {
@@ -54,9 +56,10 @@ const Man = () => {
 };
 
   return (
+    <>
     <div>
       <Navbar />
-      <div className="mt-8 md:mt-0 p-4 md:p-8 bg-gray-50 min-h-screen">
+      <div className="mt-8 md:mt-0 p-4  md:p-8 bg-gray-50 min-h-screen">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 md:mb-8 text-center md:text-left">
           👔 Man – All Products
         </h1>
@@ -108,10 +111,11 @@ const Man = () => {
                   <p className="text-sm text-gray-600 flex-1">
                     {product.description}
                   </p>
-                  <div className="mt-1 flex items-center gap-2">
+                  <div className="mt-1 flex items-center gap-2 flex-row justify-between">
                     <span className="text-xl font-bold text-indigo-600">
                       ${product.price}
                     </span>
+                    <WhatsappBtn />
                   </div>
                 </div>
               </div>
@@ -120,6 +124,9 @@ const Man = () => {
         )}
       </div>
     </div>
+    <Footer />
+
+    </>
   );
 };
 

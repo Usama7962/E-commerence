@@ -4,6 +4,9 @@ import { Heart, ShoppingCart } from "lucide-react";
 import { getProductsByCategory } from "../api/productApi";
 import { toggleWishlist, getWishlist } from "../api/wishlistApi";
 import { useRouter } from "next/navigation";
+import WhatsappBtn from "../Modules/Shop/Whatsappbtn";
+import Navbar from "./Navbar/Navbar";
+import Footer from "./Footer/Footer";
 
 
 const Woman = () => {
@@ -49,6 +52,10 @@ const Woman = () => {
   };
 
   return (
+    <>
+    <div>
+      <Navbar />
+    </div>
     <div className="mt-8 md:mt-0 p-4 md:p-8 bg-gray-50 min-h-screen">
       <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 md:mb-8 text-center md:text-left">
         👔 Woman – All Products
@@ -100,10 +107,11 @@ const Woman = () => {
                 <p className="text-sm text-gray-600 flex-1">
                   {product.description}
                 </p>
-                <div className="mt-1 flex items-center gap-2">
-                  <span className="text-xl font-bold text-indigo-600">
+                <div className="mt-1  flex items-center gap-2 flex-row justify-between ">
+                  <span className="text-xl font-bold  text-indigo-600">
                     ${product.price}
                   </span>
+                  <WhatsappBtn />
                 </div>
               </div>
             </div>
@@ -111,6 +119,8 @@ const Woman = () => {
         </div>
       )}
     </div>
+    <Footer />
+    </>
   );
 };
 
