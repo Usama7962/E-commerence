@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const BASE_URL = "http://localhost:5000/api/address";
-const BASE_URL = "https://e-commerencebackend-tan.vercel.app/api/address" || "http://localhost:5000/api/address" ;
+const BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/address`;
 
 
 // ✅ Get Address by User
