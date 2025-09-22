@@ -25,7 +25,7 @@ const Forgot_Password = () => {
       localStorage.setItem("forgotEmail", email);
 
       setTimeout(() => {
-        router.push("Otp");
+        router.push("/Otp");
       }, 1000);
 
     } catch (err) {

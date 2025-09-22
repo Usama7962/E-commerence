@@ -11,7 +11,7 @@ export default function ProtectedLayout({ children }) {
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   // ✅ allowed public routes (like login, signup, forgot password)
-  const publicRoutes = ["/Login", "/Signup", "/Forgot_Password", "/ChangePassword"];
+  const publicRoutes = ["/Login", "/Signup", "/Forgot_Password", "/ChangePassword","/Otp"];
 
   useEffect(() => {
     // agar login nahi h aur route public ni h
