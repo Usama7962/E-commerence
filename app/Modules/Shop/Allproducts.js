@@ -4,15 +4,15 @@ import { getProducts, getProductsByCategory } from "../../api/productApi.js";
 import { Heart, ShoppingCart } from "lucide-react";
 import { toggleWishlist, getWishlist } from "../../api/wishlistApi.js";
 import { useRouter } from "next/navigation";
-import { FaWhatsapp } from "react-icons/fa";
 import WhatsappBtn from "./Whatsappbtn.js";
 
 const AllProducts = ({ selectedCategory }) => {
   const [products, setProducts] = useState([]);
-  const [wishlistIds, setWishlistIds] = useState([]); // ✅ wishlist state
+  const [wishlistIds, setWishlistIds] = useState([]); 
+  const [loading, setLoading] = useState(true); // ✅ loading state
   const router = useRouter();
 
-  // ✅ Products fetch karna
+  // ✅ Products fetch
   const fetchProducts = async () => {
     try {
       let response;
@@ -27,7 +27,7 @@ const AllProducts = ({ selectedCategory }) => {
     }
   };
 
-  // ✅ Wishlist fetch karna
+  // ✅ Wishlist fetch
   const fetchWishlist = async () => {
     try {
       const wishlist = await getWishlist();
@@ -38,11 +38,15 @@ const AllProducts = ({ selectedCategory }) => {
   };
 
   useEffect(() => {
-    fetchProducts();
-    fetchWishlist(); // load wishlist on component mount
+    const loadData = async () => {
+      setLoading(true); // start loading
+      await Promise.all([fetchProducts(), fetchWishlist()]);
+      setLoading(false); // stop loading
+    };
+    loadData();
   }, [selectedCategory]);
 
-  // ✅ Wishlist toggle karna
+  // ✅ Wishlist toggle
   const handleToggle = async (productId) => {
     try {
       await toggleWishlist(productId);
@@ -58,9 +62,15 @@ const AllProducts = ({ selectedCategory }) => {
 
   return (
     <div className="p-4 md:p-6">
-      <h1 className="text-xl md:text-2xl font-bold mb-6 ">All Products</h1>
+      <h1 className="text-xl md:text-2xl font-bold mb-6">All Products</h1>
 
-      {products.length === 0 ? (
+      {/* ✅ Loading Spinner */}
+      {loading ? (
+        <div className="flex justify-center items-center py-20">
+          <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+          <span className="ml-3 text-indigo-600 font-medium">Loading...</span>
+        </div>
+      ) : products.length === 0 ? (
         <p className="text-gray-500 text-center text-lg">
           No products found. Please add some!
         </p>
@@ -89,10 +99,13 @@ const AllProducts = ({ selectedCategory }) => {
                   <button
                     className={`p-2 rounded-full transition cursor-pointer ${
                       wishlistIds.includes(product._id)
-                        ? "bg-white text-pink-600" // ✅ Add → Blue
+                        ? "bg-white text-pink-600"
                         : "bg-white text-black"
                     }`}
-                    onClick={() => handleToggle(product._id)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // prevent product page navigation
+                      handleToggle(product._id);
+                    }}
                   >
                     <Heart size={20} />
                   </button>
@@ -104,18 +117,18 @@ const AllProducts = ({ selectedCategory }) => {
                 <p className="font-semibold text-gray-900 text-sm md:text-lg">
                   {product.name}
                 </p>
-                <p className="text-xs md:text-sm  text-gray-600 flex-1">
+                <p className="text-xs md:text-sm text-gray-600 flex-1">
                   {product.description}
                 </p>
-                <div className="mt-1 flex items-center justify-between  gap-2">
+                <div className="mt-1 flex items-center justify-between gap-2">
                   <span className="text-base md:text-xl font-bold text-indigo-600">
                     ${product.price}
                   </span>
-                 <WhatsappBtn 
-      name={product.name} 
-      price={product.price} 
-      description={product.description}
-    />
+                  <WhatsappBtn
+                    name={product.name}
+                    price={product.price}
+                    description={product.description}
+                  />
                 </div>
               </div>
             </div>
