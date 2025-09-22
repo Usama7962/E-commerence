@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { getCart } from "@/app/api/cartApi";
 import { getAddress } from "@/app/api/addressApi";
 import { placeOrder } from "@/app/api/orderApi"; // ✅ order api import
-import { useSearchParams, useRouter } from "next/navigation";
+import {  useRouter } from "next/navigation";
 import Navbar from "@/app/component/Navbar/Navbar";
 import Footer from "@/app/component/Footer/Footer";
 import { ArrowLeft } from "lucide-react";
@@ -15,7 +15,6 @@ const Revieworder = () => {
   const [showModal, setShowModal] = useState(false); // ✅ modal state
   const [placing, setPlacing] = useState(false); // ✅ loading while placing order
 
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   // ✅ Date calculation (today + 4 days)

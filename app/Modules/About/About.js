@@ -59,7 +59,7 @@ const About = () => {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-gray-800 mb-8">Get in Touch</h2>
           <p className="text-gray-600 mb-8">
-            Have questions or feedback? We'd love to hear from you.
+            Have questions or feedback? We hadd love to hear from you.
           </p>
           <div className="flex flex-col md:flex-row justify-center items-center gap-6">
             <div className="flex items-center gap-2">

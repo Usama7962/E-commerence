@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { getAddress, addAddress, updateAddress, deleteAddress } from "@/app/api/addressApi";
 import { useRouter } from "next/navigation";
 import { getCart } from "@/app/api/cartApi";
@@ -8,7 +7,6 @@ import { ArrowLeft } from "lucide-react";
 
 const ShoppingAddress = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [address, setAddress] = useState([]);
   console.log("address", address);
   const [loading, setLoading] = useState(true);
