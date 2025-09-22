@@ -1,8 +1,7 @@
 import axios from "axios";
 
 // const BASE_URL = "http://localhost:5000/api/orders";
-const BASE_URL = "https://e-commerencebackend-tan.vercel.app/api/orders" || "http://localhost:5000/api/orders";
-
+const BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/order`;
 
 export const placeOrder = async (addressId) => {
   const token = localStorage.getItem("token");
