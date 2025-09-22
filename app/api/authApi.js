@@ -1,34 +1,38 @@
-import axios from "axios";
+// 📌 api/authApi.js
+import { axiospublicApi, axiosPrivateApi } from "../config/request";
 
-// const BASE_URL = "http://localhost:5000/api/auth";
-const BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/auth`;
-// ✅ Signup
+// ✅ Signup (Public)
 export const signup = async (userData) => {
-  console.log("userData", userData);
-  const res = await axios.post(`${BASE_URL}/signup`, userData);
+  const res = await axiospublicApi.post(`/auth/signup`, userData);
   return res.data;
 };
 
-// ✅ Login
+// ✅ Login (Public)
 export const login = async (credentials) => {
-  const res = await axios.post(`${BASE_URL}/login`, credentials);
+  const res = await axiospublicApi.post(`/auth/login`, credentials);
   return res.data;
 };
 
-// ✅ Forget Password
+// ✅ Forget Password (Public)
 export const forgetPassword = async (emailData) => {
-  const res = await axios.post(`${BASE_URL}/forget-password`, emailData);
+  const res = await axiospublicApi.post(`/auth/forget-password`, emailData);
   return res.data;
 };
 
-// ✅ Verify OTP
+// ✅ Verify OTP (Public)
 export const verifyOtp = async (otpData) => {
-  const res = await axios.post(`${BASE_URL}/verify-otp`, otpData);
+  const res = await axiospublicApi.post(`/auth/verify-otp`, otpData);
   return res.data;
 };
 
-// ✅ Reset Password
+// ✅ Reset Password (Public)
 export const resetPassword = async (passwordData) => {
-  const res = await axios.post(`${BASE_URL}/reset-password`, passwordData);
+  const res = await axiospublicApi.post(`/auth/reset-password`, passwordData);
+  return res.data;
+};
+
+// ✅ Example (Private - needs token)
+export const getUserProfile = async () => {
+  const res = await axiosPrivateApi.get(`/auth/profile`);
   return res.data;
 };

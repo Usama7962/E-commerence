@@ -1,29 +1,23 @@
-import axios from "axios";
 
-// const BASE_URL = "http://localhost:5000/api/cart";
-const BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/cart`;
+import { axiosPrivateApi } from "../config/request";
 
 
-export const getCart = async (token) => {
-  const res = await axios.get(BASE_URL, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+export const getCart = async () => {
+  const res = await axiosPrivateApi.get("/cart");
   return res.data;
 };
 
-export const addToCart = async (productId, quantity, selectedSize, token) => {
-  const res = await axios.post(
-    `${BASE_URL}/add`,
-    { productId, quantity, selectedSize },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+
+export const addToCart = async (productId, quantity, selectedSize) => {
+  const res = await axiosPrivateApi.post("/cart/add", {
+    productId,
+    quantity,
+    selectedSize,
+  });
   return res.data;
 };
 
 export const removeFromCart = async (productId) => {
-  const token = localStorage.getItem("token");
-  const res = await axios.delete(`${BASE_URL}/${productId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const res = await axiosPrivateApi.delete(`/cart/${productId}`);
   return res.data;
 };

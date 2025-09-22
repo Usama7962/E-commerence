@@ -1,44 +1,42 @@
-import axios from "axios";
+// 📌 api/productApi.js
+import { axiospublicApi, axiosPrivateApi } from "../config/request";
 
-// const BASE_URL = "http://localhost:5000/api/products";
-const BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/products`;
-
-// ✅ Create Product (with image)
+// ✅ Create Product (Private - with image)
 export const createProduct = async (formData) => {
-  const res = await axios.post(BASE_URL, formData, {
+  const res = await axiosPrivateApi.post("/products", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return res.data;
 };
 
-// ✅ Get all products
+// ✅ Get all products (Public)
 export const getProducts = async () => {
-  const res = await axios.get(BASE_URL);
+  const res = await axiospublicApi.get("/products");
   return res.data;
 };
 
-// ✅ Get product by category
+// ✅ Get product by category (Public)
 export const getProductsByCategory = async (category) => {
-  const res = await axios.get(`${BASE_URL}/category/${category}`);
+  const res = await axiospublicApi.get(`/products/category/${category}`);
   return res.data;
 };
 
-// ✅ Get product by ID
+// ✅ Get product by ID (Public)
 export const getProductById = async (id) => {
-  const res = await axios.get(`${BASE_URL}/${id}`);
+  const res = await axiospublicApi.get(`/products/${id}`);
   return res.data;
 };
 
-// ✅ Update product (with image)
+// ✅ Update product (Private - with image)
 export const updateProduct = async (id, formData) => {
-  const res = await axios.put(`${BASE_URL}/${id}`, formData, {
+  const res = await axiosPrivateApi.put(`/products/${id}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return res.data;
 };
 
-// ✅ Delete product
+// ✅ Delete product (Private)
 export const deleteProduct = async (id) => {
-  const res = await axios.delete(`${BASE_URL}/${id}`);
+  const res = await axiosPrivateApi.delete(`/products/${id}`);
   return res.data;
 };
