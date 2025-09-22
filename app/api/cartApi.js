@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/api/cart";
+// const BASE_URL = "http://localhost:5000/api/cart";
+const BASE_URL = "https://e-commerencebackend-tan.vercel.app/api/cart";
+
 
 export const getCart = async (token) => {
   const res = await axios.get(BASE_URL, {

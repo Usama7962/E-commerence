@@ -111,7 +111,11 @@ const AllProducts = ({ selectedCategory }) => {
                   <span className="text-base md:text-xl font-bold text-indigo-600">
                     ${product.price}
                   </span>
-                 <WhatsappBtn />
+                 <WhatsappBtn 
+      name={product.name} 
+      price={product.price} 
+      description={product.description}
+    />
                 </div>
               </div>
             </div>

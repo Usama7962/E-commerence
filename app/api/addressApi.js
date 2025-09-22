@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/api/address";
+// const BASE_URL = "http://localhost:5000/api/address";
+const BASE_URL = "https://my-backend.vercel.app/api/address";
+
 
 // ✅ Get Address by User
 export const getAddress = async () => {

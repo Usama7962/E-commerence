@@ -4,6 +4,9 @@ import { getCart } from "@/app/api/cartApi";
 import { getAddress } from "@/app/api/addressApi";
 import { placeOrder } from "@/app/api/orderApi"; // ✅ order api import
 import { useSearchParams, useRouter } from "next/navigation";
+import Navbar from "@/app/component/Navbar/Navbar";
+import Footer from "@/app/component/Footer/Footer";
+import { ArrowLeft } from "lucide-react";
 
 const Revieworder = () => {
   const [cart, setCart] = useState(null);
@@ -94,9 +97,18 @@ const Revieworder = () => {
   const grandTotal = subtotal + deliveryCharge;
 
   return (
+    <div>
+      <Navbar/>
     <div className="flex flex-col md:flex-row justify-between p-10 gap-5">
       {/* Left Side */}
       <div className=" w-full md:w-2/3 space-y-6">
+        <button
+      onClick={() => router.back()}
+      className="flex items-center gap-2 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+    >
+      <ArrowLeft size={20} />
+      Back
+    </button>
         <h2 className="text-2xl font-bold">Review Your Order</h2>
 
         <p className="font-semibold">
@@ -188,12 +200,7 @@ const Revieworder = () => {
 
             {/* Buttons */}
             <div className="mt-5 space-y-2">
-              <button
-                onClick={() => router.push("/orders")}
-                className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800"
-              >
-                View Order
-              </button>
+            
               <button
                 onClick={() => router.push("/")}
                 className="w-full border border-gray-300 py-2 rounded-lg hover:bg-gray-100"
@@ -204,6 +211,8 @@ const Revieworder = () => {
           </div>
         </div>
       )}
+    </div>
+    <Footer/>
     </div>
   );
 };

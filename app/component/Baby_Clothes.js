@@ -85,20 +85,23 @@ const handleToggle = async (productId) => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
 
-                {/* Hover Buttons */}
-                <div className="absolute inset-0 flex flex-col items-start justify-end p-4 gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer">
-                  <button className="bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 transition cursor-pointer">
+                {/* Action Buttons */}
+                <div className="absolute inset-0 flex flex-col items-start justify-end p-4 gap-3 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 cursor-pointer">
+                  <button className="bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 transition cursor-pointer shadow-md">
                     <ShoppingCart size={20} />
                   </button>
 
                   {/* Wishlist Button */}
                   <button
-                    className={`p-2 rounded-full transition cursor-pointer ${
+                    className={`p-2 rounded-full transition cursor-pointer shadow-md ${
                       wishlistIds.includes(product._id)
                         ? "bg-white text-pink-600" // ✅ Add → Blue
                         : "bg-white text-black" // ✅ Remove → Pink
                     }`}
-                    onClick={() => handleToggle(product._id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggle(product._id);
+                    }}
                   >
                     <Heart size={20} />
                   </button>
@@ -117,7 +120,7 @@ const handleToggle = async (productId) => {
                   <span className="text-xl font-bold text-indigo-600">
                     ${product.price}
                   </span>
-                  <WhatsappBtn />
+                  <WhatsappBtn  />
                 </div>
               </div>
             </div>

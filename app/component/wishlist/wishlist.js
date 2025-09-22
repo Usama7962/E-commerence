@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { getWishlist, removeFromWishlist } from "../../api/wishlistApi.js";
 import { ShoppingCart, Trash2 } from "lucide-react";
 import Navbar from "../Navbar/Navbar.js";
+import Footer from "../Footer/Footer.js";
 
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
@@ -91,6 +92,7 @@ const Wishlist = () => {
         </div>
       )}
     </div>
+    <Footer/>
     </div>
   );
 };

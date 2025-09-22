@@ -1,11 +1,15 @@
 import React from 'react'
 import Image from 'next/image'
+import Navbar from '@/app/component/Navbar/Navbar'
+import Footer from '@/app/component/Footer/Footer'
 
 const About = () => {
   return (
+    <div>
+      <Navbar/>
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative bg-indigo-600 text-white py-20">
+      <div className="relative bg-white text-black py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">About Our Store</h1>
@@ -73,6 +77,8 @@ const About = () => {
           </div>
         </div>
       </div>
+    </div>
+    <Footer/>
     </div>
   )
 }
