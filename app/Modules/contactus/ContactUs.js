@@ -68,7 +68,7 @@ const ContactUs = () => {
             <h1 className="text-4xl font-bold text-black mb-3">
               Get in Touch
             </h1>
-            <p className="text-gray-600 text-lg">We'd love to hear from you. Let's start a conversation!</p>
+            <p className="text-gray-600 text-lg">We had love to hear from you. Lets start a conversation!</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
