@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const BASE_URL = "http://localhost:5000/api/wishlist";
-const BASE_URL = "https://e-commerencebackend-tan.vercel.app/api/wishlist";
+const BASE_URL = "https://e-commerencebackend-tan.vercel.app/api/wishlist" || "http://localhost:5000/api/wishlish";
 
 
 export const getWishlist = async () => {

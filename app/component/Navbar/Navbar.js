@@ -145,11 +145,10 @@ const handleClick=()=>{
                 </Link>
               </li>
             ))}
+           
           </ul>
           {/* Mobile Login Button */}
-          <button className="mt-4 w-fit flex  px-2 border-2 py-2 bg-black text-white rounded">
-            Login
-          </button>
+          
         </div>
       )}
     </div>
