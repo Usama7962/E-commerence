@@ -156,10 +156,16 @@ const Orders = () => {
                   <span>
                     {item.product?.name} × {item.quantity} = $
                     {item.product.price}
+                    
                   </span>
+                  <p className="font-bold text-sm sm:text-base">
+              Size:{item.selectedSize}
+
+            </p>
                 </li>
               ))}
             </ul>
+            
 
             <p className="font-bold text-sm sm:text-base">
               Total: ${selectedOrder.totalPrice}

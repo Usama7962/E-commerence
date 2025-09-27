@@ -8,11 +8,18 @@ export const loginUser = createAsyncThunk(
     try {
       const data = await login({ email, password });
 
-      if (data.token) {
-        localStorage.setItem("token", data.token);
+      if (data.accessToken) {
+        localStorage.setItem("token", data.accessToken);
+      }
+      if (data.refreshToken) {
+        localStorage.setItem("refreshToken", data.refreshToken);
       }
       if (data.user?.role) {
         localStorage.setItem("role", data.user.role);
+      }
+
+      if (data.user) {
+        localStorage.setItem("user", data.user);
       }
 
       return data;
@@ -29,8 +36,8 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
-    token: typeof window !== 'undefined' ? localStorage.getItem('token') : null,
-    role: typeof window !== 'undefined' ? localStorage.getItem('role') : null,
+    token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
+    role: typeof window !== "undefined" ? localStorage.getItem("role") : null,
     loading: false,
     error: null,
   },
@@ -50,9 +57,11 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        console.log(state, "sssssss");
+        console.log(action.payload, "ddddddddddd");
         state.loading = false;
         state.user = action.payload.user || null;
-        state.token = action.payload.token || null;
+        state.token = action.payload.accessToken || null;
         state.role = action.payload.user?.role || null; // ✅ role set
       })
       .addCase(loginUser.rejected, (state, action) => {

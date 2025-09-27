@@ -7,6 +7,7 @@ const page = () => {
     <>
     <AdminLayout>
       <Orders/>
+      
       </AdminLayout>
     </>
   )

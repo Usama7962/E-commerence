@@ -10,6 +10,7 @@ const Login = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { loading, error, role, token } = useSelector((state) => state.auth);
+  console.log(token,'ddddd');
 
   const [formData, setFormData] = useState({ email: "", password: "" });
 
