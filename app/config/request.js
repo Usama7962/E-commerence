@@ -1,46 +1,43 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import Router from "next/router";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-
 
 export const axiospublicApi = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
 });
 
-
 export const axiosPrivateApi = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
 });
 
-
 const handleLogout = () => {
   localStorage.removeItem("token");
-  Router.replace("/login");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("role");
+  localStorage.removeItem("user");
+  if (typeof window !== "undefined") {
+    window.location.href = "/admin/login";
+  }
 };
-
 
 let tokenErrorToastShown = false;
 const showTokenErrorToast = (msg) => {
   if (!tokenErrorToastShown) {
     toast.error(msg);
     tokenErrorToastShown = true;
+    setTimeout(() => { tokenErrorToastShown = false; }, 5000);
   }
 };
-
 
 axiosPrivateApi.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      showTokenErrorToast("Token missing. Please login.");
-      handleLogout();
-      throw new axios.Cancel("No token found.");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    config.headers["Authorization"] = `Bearer ${token}`;
     return config;
   },
   (error) => Promise.reject(error)
@@ -62,12 +59,10 @@ const processQueue = (error, token = null) => {
 
 axiosPrivateApi.interceptors.response.use(
   (response) => {
-    
     const newToken = response.headers["x-access-token"];
     if (newToken) {
       localStorage.setItem("token", newToken);
-      axiosPrivateApi.defaults.headers.common["Authorization"] =
-        "Bearer " + newToken;
+      axiosPrivateApi.defaults.headers.common["Authorization"] = "Bearer " + newToken;
     }
     return response;
   },
@@ -75,7 +70,7 @@ axiosPrivateApi.interceptors.response.use(
     const originalRequest = error.config;
     const status = error.response?.status;
 
-    if ((status === 401 || status === 403) && !originalRequest._retry) {
+    if ((status === 401 || status === 403) && !originalRequest._retry && localStorage.getItem("refreshToken")) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -89,26 +84,16 @@ axiosPrivateApi.interceptors.response.use(
 
       originalRequest._retry = true;
       isRefreshing = true;
-      const refreshToken=localStorage.getItem('refreshToken')
-      console.log(refreshToken,'redfredfredfre')
+      const refreshToken = localStorage.getItem("refreshToken");
 
       try {
-      
-        const res = await axiospublicApi.post("/auth/refresh",{refreshToken});
-        console.log("🔄 Refresh token request starting...");
-
+        const res = await axiospublicApi.post("/auth/refresh", { refreshToken });
         const newAccessToken = res.data?.accessToken;
         if (newAccessToken) {
           localStorage.setItem("token", newAccessToken);
-
-          axiosPrivateApi.defaults.headers.common["Authorization"] =
-            "Bearer " + newAccessToken;
-
+          axiosPrivateApi.defaults.headers.common["Authorization"] = "Bearer " + newAccessToken;
           processQueue(null, newAccessToken);
-
-          originalRequest.headers["Authorization"] =
-            "Bearer " + newAccessToken;
-
+          originalRequest.headers["Authorization"] = "Bearer " + newAccessToken;
           return axiosPrivateApi(originalRequest);
         }
       } catch (refreshError) {
@@ -121,13 +106,8 @@ axiosPrivateApi.interceptors.response.use(
       }
     }
 
-  
     if (!error.response) {
       toast.error("Network error. Check your internet.");
-    } else if (status >= 400 && status < 500) {
-      toast.warn(error.response.data?.message || "Client error occurred.");
-    } else if (status >= 500) {
-      toast.error("Server error. Try again later.");
     }
 
     return Promise.reject(error);

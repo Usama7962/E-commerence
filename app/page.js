@@ -1,14 +1,8 @@
-import React from 'react'
-// import Login from './Modules/Login/Login'
-import Signup from './Modules/signup/Signup'
-import Home from './Modules/Home/Home'
+import React from "react";
+import Shop from "./Modules/Shop/Shop";
 
 const page = () => {
-  return (
-    <>
-    <Home/>
-    </>
-  )
-}
+  return <Shop />;
+};
 
-export default page
+export default page;

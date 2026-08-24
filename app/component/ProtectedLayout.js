@@ -1,31 +1,26 @@
 "use client";
-import { useSelector } from "react-redux";
-import { useRouter, usePathname } from "next/navigation";
+
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
 export default function ProtectedLayout({ children }) {
   const router = useRouter();
-  const pathname = usePathname();
-  const { user } = useSelector((state) => state.auth);
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
-  // ✅ allowed public routes (like login, signup, forgot password)
-  const publicRoutes = ["/Login", "/Signup", "/Forgot_Password", "/ChangePassword","/Otp",];
+  const { token, role } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    // agar login nahi h aur route public ni h
-    if (!user && !token && !publicRoutes.includes(pathname)) {
-      router.push("/Login");
+    if (!token || role !== "admin") {
+      router.replace("/admin/login");
     }
+  }, [token, role, router]);
 
-    // agar login h aur login page par gaya to home per redirect
-    if ((user || token) && pathname === "Login") {
-      router.push("/");
-    }
-  }, [user, token, pathname, router]);
-
- 
+  if (!token || role !== "admin") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">Redirecting...</p>
+      </div>
+    );
+  }
 
   return <>{children}</>;
 }

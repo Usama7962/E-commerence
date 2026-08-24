@@ -1,11 +1,11 @@
-import React from 'react'
-import ChangePassword from '../../Modules/ChangePassword/ChangePassword.js'
-const page = () => {
-  return (
-    <>
-    <ChangePassword/>
-    </>
-  )
-}
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default page
+export default function ChangePasswordRedirect() {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/admin/change-password");
+  }, [router]);
+  return null;
+}

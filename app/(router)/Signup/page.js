@@ -1,12 +1,11 @@
-import Signup from '@/app/Modules/signup/Signup'
-import React from 'react'
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-const page = () => {
-  return (
-    <>
-    <Signup/>
-    </>
-  )
+export default function SignupRedirect() {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/");
+  }, [router]);
+  return null;
 }
-
-export default page

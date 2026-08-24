@@ -1,15 +1,16 @@
+"use client";
+
 import AdminSidebar from "../AdminSidebar/AdminSidebar.js";
+import ProtectedLayout from "../ProtectedLayout.js";
 
 const AdminLayout = ({ children }) => {
   return (
-    <div className="flex justify-between">
-      <div className=" w-0 md:w-[150px]">
+    <ProtectedLayout>
       <AdminSidebar />
-      </div>
-      <div className="w-full mt-10 md:mt-0 md:w-5xl bg-gray-100 ">
+      <div className="mt-12 md:mt-0 md:ml-64 min-h-screen bg-gray-50">
         {children}
       </div>
-    </div>
+    </ProtectedLayout>
   );
 };
 

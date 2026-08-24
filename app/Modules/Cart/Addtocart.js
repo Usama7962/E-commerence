@@ -2,24 +2,17 @@
 import React, { useEffect, useState } from "react";
 import { getCart, removeFromCart } from "@/app/api/cartApi";
 import { useRouter } from "next/navigation";
-import { Trash2 } from "lucide-react";
+import { Trash2, ShoppingCart, Leaf, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 const Addtocart = () => {
   const router = useRouter();
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [discount, setDiscount] = useState("");
-  const [appliedDiscount, setAppliedDiscount] = useState(0);
 
-  // ✅ Cart fetch
   const fetchCart = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        router.push("/login");
-        return;
-      }
-      const res = await getCart(token);
+      const res = await getCart();
       setCart(res);
     } catch (error) {
       console.error("Error fetching cart:", error);
@@ -30,13 +23,11 @@ const Addtocart = () => {
 
   useEffect(() => {
     fetchCart();
-  }, [router]);
+  }, []);
 
-  // ✅ Remove item
   const handleRemove = async (productId) => {
     try {
       await removeFromCart(productId);
-      // frontend state update
       setCart((prevCart) => ({
         ...prevCart,
         items: prevCart.items.filter((item) => item.product._id !== productId),
@@ -49,116 +40,150 @@ const Addtocart = () => {
     }
   };
 
-  // const handleApplyDiscount = () => {
-  //   if (discount === "FLAT50") {
-  //     setAppliedDiscount(50);
-  //   } else {
-  //     alert("Invalid coupon code");
-  //   }
-  // };
+  if (loading) {
+    return (
+      <div className="pt-20 min-h-screen flex items-center justify-center">
+        <div className="w-10 h-10 border-3 border-[var(--primary)] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
-  if (loading) return <div className="text-center py-10">Loading...</div>;
-  if (!cart || !cart.items?.length) return <div className="text-center py-10">Your cart is empty.</div>;
+  if (!cart || !cart.items?.length) {
+    return (
+      <div className="pt-20 min-h-screen flex flex-col items-center justify-center px-4">
+        <div className="w-20 h-20 rounded-full bg-[var(--primary-light)] flex items-center justify-center mb-6">
+          <ShoppingCart size={32} className="text-[var(--primary)]" />
+        </div>
+        <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">Your Cart is Empty</h2>
+        <p className="text-[var(--muted)] mb-6 text-center">
+          Explore our herbal products and add something to your cart
+        </p>
+        <Link
+          href="/Shop"
+          className="inline-flex items-center gap-2 bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white px-6 py-3 rounded-full font-semibold transition-all"
+        >
+          <Leaf size={16} />
+          Browse Products
+        </Link>
+      </div>
+    );
+  }
 
   const subtotal = cart.totalPrice || 0;
-  const deliveryCharge = 5;
-  const grandTotal = subtotal - appliedDiscount + deliveryCharge;
+  const deliveryCharge = subtotal >= 1000 ? 0 : 150;
+  const grandTotal = subtotal + deliveryCharge;
 
   return (
-    <div className="max-w-6xl  mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
-      {/* LEFT SIDE: Cart Items */}
-      <div className="lg:col-span-2">
-        <h2 className="text-2xl font-bold mb-6">Checkout</h2>
-        <div className="hidden md:flex flex-row justify-between mb-4">
-          <div className="w-[60%] md:w-[50%]"><p>Product</p></div>
-          <div className="w-[40%] md:w-[50%] flex flex-row justify-end gap-4 md:gap-8 pr-12">  
-            <p>Price</p>
-            <p>Quantity</p>
-            <p>Subtotal</p>
+    <div className="pt-20 pb-12 min-h-screen bg-[var(--background)]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <button
+              onClick={() => router.back()}
+              className="flex items-center gap-2 text-[var(--muted)] hover:text-[var(--foreground)] mb-2 transition-colors"
+            >
+              <ArrowLeft size={16} />
+              <span className="text-sm">Continue Shopping</span>
+            </button>
+            <h1 className="text-2xl md:text-3xl font-bold text-[var(--foreground)]">Your Cart</h1>
+            <p className="text-[var(--muted)] text-sm mt-1">{cart.items.length} item(s) in cart</p>
           </div>
         </div>
-        <div className="space-y-6">
-          {cart.items.map((item, index) => (
-            <div
-              key={index}
-              className="flex flex-col md:flex-row items-start md:items-center justify-between border-b pb-4 gap-4 md:gap-0"
-            >
-              {/* Product info */}
-              <div className="flex items-center gap-4  w-full md:w-[70%]">
-                <img
-                  src={item.product.imageUrl}
-                  alt={item.product.name}
-                  className="w-16 h-16 object-cover rounded"
-                />
-                <div>
-                  <h3 className="font-semibold ">{item.product.name}</h3>
-                  <p className="text-gray-500 text-sm">Size: {item.selectedSize}</p>
-                </div>
-              </div>
 
-              {/* Price + Quantity + Subtotal + Delete */}
-              <div className="flex items-start justify-between  w-full md:w-[40%] gap-4 md:gap-8">
-                <div className="flex items-center gap-2 md:hidden">
-                  <p className="text-gray-500">Price:</p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Cart Items */}
+          <div className="lg:col-span-2 space-y-4">
+            {cart.items.map((item, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-4 bg-white rounded-2xl p-4 border border-[var(--border)] hover:shadow-sm transition-shadow"
+              >
+                {/* Product Image */}
+                <div className="w-20 h-20 md:w-24 md:h-24 flex-shrink-0 rounded-xl overflow-hidden bg-[var(--primary-light)]">
+                  <img
+                    src={item.product.imageUrl}
+                    alt={item.product.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <span className="font-semibold flex items-start ">${item.product.price}</span>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-500 md:hidden">Qty:</span>
-                  <div className="flex items-center border rounded">
-                    <span className="px-3">{item.quantity}</span>
+                {/* Product Info */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-[var(--foreground)] text-sm md:text-base truncate">
+                    {item.product.name}
+                  </h3>
+                  <p className="text-xs text-[var(--muted)] mt-0.5 flex items-center gap-1">
+                    <Leaf size={10} className="text-[var(--primary)]" />
+                    Natural Herbal Product
+                  </p>
+                  <div className="flex items-center gap-4 mt-2">
+                    <span className="text-sm text-[var(--muted)]">Qty: {item.quantity}</span>
+                    <span className="text-sm font-bold text-[var(--primary)]">
+                      Rs.{(item.product.price * item.quantity).toLocaleString()}
+                    </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-500 md:hidden">Total:</span>
-                  <span className="font-semibold">
-                    ${item.product.price * item.quantity}
+                {/* Remove Button */}
+                <button
+                  onClick={() => handleRemove(item.product._id)}
+                  className="p-2.5 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Order Summary */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-2xl p-6 border border-[var(--border)] sticky top-24">
+              <h3 className="text-lg font-bold text-[var(--foreground)] mb-5">Order Summary</h3>
+
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-[var(--muted)]">Subtotal</span>
+                  <span className="font-semibold text-[var(--foreground)]">Rs.{subtotal.toLocaleString()}</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="text-[var(--muted)]">Delivery</span>
+                  <span className={`font-semibold ${deliveryCharge === 0 ? "text-green-600" : "text-[var(--foreground)]"}`}>
+                    {deliveryCharge === 0 ? "Free" : `Rs.${deliveryCharge}`}
                   </span>
                 </div>
 
-                {/* 🗑️ Delete icon */}
-                <button
-                  onClick={() => handleRemove(item.product._id)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <Trash2 size={20} />
-                </button>
+                {deliveryCharge > 0 && (
+                  <p className="text-xs text-[var(--primary)] bg-[var(--primary-light)] rounded-lg px-3 py-2">
+                    Add Rs.{(1000 - subtotal).toLocaleString()} more for free delivery!
+                  </p>
+                )}
+
+                <hr className="border-[var(--border)] my-3" />
+
+                <div className="flex justify-between text-base">
+                  <span className="font-bold text-[var(--foreground)]">Total</span>
+                  <span className="font-bold text-[var(--primary)] text-lg">Rs.{grandTotal.toLocaleString()}</span>
+                </div>
               </div>
+
+              <button
+                onClick={() => router.push("/address")}
+                className="w-full mt-6 bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white py-3.5 rounded-xl font-semibold transition-all shadow-lg shadow-green-900/10 flex items-center justify-center gap-2"
+              >
+                Proceed to Checkout
+              </button>
+
+              <Link
+                href="/Shop"
+                className="block text-center mt-3 text-sm text-[var(--muted)] hover:text-[var(--primary)] transition-colors"
+              >
+                Continue Shopping
+              </Link>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
-
-      {/* RIGHT SIDE: Summary */}
-      <div className="border p-6 rounded-lg bg-gray-50">
-        <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
-
-        <div className="flex justify-between mb-2">
-          <span>Subtotal</span>
-          <span className="font-semibold">${subtotal}</span>
-        </div>
-
-       
-
-        <div className="flex justify-between mb-2">
-          <span>Delivery Charge</span>
-          <span>${deliveryCharge}</span>
-        </div>
-
-        <hr className="my-3" />
-
-        <div className="flex justify-between font-bold text-lg mb-4">
-          <span>Grand Total</span>
-          <span>${grandTotal}</span>
-        </div>
-
-        <button
-          onClick={() => router.push("/address")}
-          className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800"
-        >
-          Proceed to Checkout
-        </button>
       </div>
     </div>
   );

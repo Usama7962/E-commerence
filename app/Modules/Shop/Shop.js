@@ -1,16 +1,16 @@
-import Footer from '@/app/component/Footer/Footer'
-import Navbar from '@/app/component/Navbar/Navbar'
-import React from 'react'
-import Userallproducts from './Userallproducts'
+import Footer from "@/app/component/Footer/Footer";
+import Navbar from "@/app/component/Navbar/Navbar";
+import React from "react";
+import ShopContent from "./ShopContent";
 
 const Shop = () => {
   return (
     <>
-    <Navbar/>
-    <Userallproducts/>
-    <Footer/>
+      <Navbar />
+      <ShopContent />
+      <Footer />
     </>
-  )
-}
+  );
+};
 
-export default Shop
+export default Shop;

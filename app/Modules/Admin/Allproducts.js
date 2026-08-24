@@ -121,7 +121,7 @@ const AllProducts = () => {
   );
 
   return (
-    <div className="mt-8 md:mt-0 md:p-8 bg-gray-50 min-h-screen ">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 md:mb-8 text-center md:text-left">
         📦 All Products
       </h1>
@@ -173,8 +173,8 @@ const AllProducts = () => {
                     {product.description}
                   </p>
                   <div className="mt-1 flex items-center gap-2">
-                    <span className="text-xl font-bold text-indigo-600">
-                      ${product.price}
+                    <span className="text-xl font-bold text-green-700">
+                      Rs.{product.price?.toLocaleString()}
                     </span>
                   </div>
                 </div>

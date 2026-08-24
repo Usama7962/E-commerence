@@ -32,7 +32,7 @@ const SuccessModal = ({ isOpen, onClose }) => {
         <button
           onClick={() => {
             onClose(); // Modal close
-            router.push("/Login"); // Route to Login
+            router.push("/admin/login");
           }}
           className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition"
         >

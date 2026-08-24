@@ -23,14 +23,10 @@ const cartSlice = createSlice({
 
 export const { setCartItems, setLoading, setError } = cartSlice.actions;
 
-// Thunk action to fetch cart items
-export const fetchCartItems = () => async (dispatch, getState) => {
-  const { token } = getState().auth;
-  if (!token) return;
-
+export const fetchCartItems = () => async (dispatch) => {
   try {
     dispatch(setLoading(true));
-    const cartData = await getCart(token);
+    const cartData = await getCart();
     dispatch(setCartItems(cartData.items || []));
   } catch (error) {
     dispatch(setError(error.message));
@@ -39,15 +35,10 @@ export const fetchCartItems = () => async (dispatch, getState) => {
   }
 };
 
-// Thunk action to add item to cart
-export const addItemToCart = (productId, quantity,selectedSize) => async (dispatch, getState) => {
-  const { token } = getState().auth;
-  if (!token) return;
-
+export const addItemToCart = (productId, quantity, selectedSize) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
-    await addToCart(productId, quantity,selectedSize, token);
-    // Fetch updated cart after adding item
+    await addToCart(productId, quantity, selectedSize);
     dispatch(fetchCartItems());
   } catch (error) {
     dispatch(setError(error.message));
@@ -55,12 +46,10 @@ export const addItemToCart = (productId, quantity,selectedSize) => async (dispat
   }
 };
 
-// Thunk action to remove item from cart
 export const removeItemFromCart = (productId) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     await removeFromCart(productId);
-    // Fetch updated cart after removing item
     dispatch(fetchCartItems());
   } catch (error) {
     dispatch(setError(error.message));

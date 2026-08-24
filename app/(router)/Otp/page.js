@@ -1,12 +1,11 @@
-import Otp from '@/app/Modules/Otp/Otp'
-import React from 'react'
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-const page = () => {
-  return (
-    <>
-    <Otp/>
-    </>
-  )
+export default function OtpRedirect() {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/admin/otp");
+  }, [router]);
+  return null;
 }
-
-export default page

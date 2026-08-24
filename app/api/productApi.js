@@ -15,6 +15,11 @@ export const getProducts = async () => {
   return res.data;
 };
 
+export const getCategories = async () => {
+  const res = await axiospublicApi.get("/products/categories");
+  return res.data;
+};
+
 
 export const getProductsByCategory = async (category) => {
   const res = await axiospublicApi.get(`/products/category/${category}`);

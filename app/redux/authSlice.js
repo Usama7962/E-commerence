@@ -1,12 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { login } from "../api/authApi";
 
-// 1️⃣ API call (Thunk)
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }, { rejectWithValue }) => {
     try {
       const data = await login({ email, password });
+
+      if (data.user?.role !== "admin") {
+        return rejectWithValue("Access denied. Admin only.");
+      }
 
       if (data.accessToken) {
         localStorage.setItem("token", data.accessToken);
@@ -17,9 +20,8 @@ export const loginUser = createAsyncThunk(
       if (data.user?.role) {
         localStorage.setItem("role", data.user.role);
       }
-
       if (data.user) {
-        localStorage.setItem("user", data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
       }
 
       return data;
@@ -31,7 +33,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// 2️⃣ Slice
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -46,8 +47,11 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.role = null;
+      state.error = null;
       localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
       localStorage.removeItem("role");
+      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
@@ -57,12 +61,10 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        console.log(state, "sssssss");
-        console.log(action.payload, "ddddddddddd");
         state.loading = false;
         state.user = action.payload.user || null;
         state.token = action.payload.accessToken || null;
-        state.role = action.payload.user?.role || null; // ✅ role set
+        state.role = action.payload.user?.role || null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;

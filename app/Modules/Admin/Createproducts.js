@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import axios from "axios";
 import { createProduct } from "../../api/productApi";
 
 const Createproducts = () => {
@@ -9,23 +8,22 @@ const Createproducts = () => {
     description: "",
     price: "",
     category: "",
+    ingredients: "",
+    usage: "",
+    benefits: "",
     image: null,
   });
 
-  const [preview, setPreview] = useState(null); // 👈 preview state
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // handle input change
   const handleChange = (e) => {
     if (e.target.name === "image") {
       const file = e.target.files[0];
       setFormData({ ...formData, image: file });
-
-      // preview
       if (file) {
         const reader = new FileReader();
-        reader.onloadend = () => {
-          setPreview(reader.result);
-        };
+        reader.onloadend = () => setPreview(reader.result);
         reader.readAsDataURL(file);
       } else {
         setPreview(null);
@@ -35,127 +33,161 @@ const Createproducts = () => {
     }
   };
 
-  // handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
         if (formData[key]) data.append(key, formData[key]);
       });
 
-      const res = await createProduct(data);
-      alert("✅ Product Added Successfully!");
-      console.log(res.data);
+      await createProduct(data);
+      alert("Product Added Successfully!");
 
-      // reset form
       setFormData({
         name: "",
         description: "",
         price: "",
         category: "",
+        ingredients: "",
+        usage: "",
+        benefits: "",
         image: null,
       });
       setPreview(null);
       e.target.reset();
     } catch (err) {
-      console.error("❌ Error:", err.response?.data || err.message);
+      console.error("Error:", err.response?.data || err.message);
       alert("Error adding product");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 mt-10">
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
-        Add New Product
-      </h2>
+    <div className="max-w-3xl mx-auto bg-white p-6 md:p-8 mt-6 rounded-2xl border border-gray-200">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New Product</h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Image */}
         <div className="flex flex-col items-center">
           {preview ? (
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-40 h-40 object-cover rounded-md mb-3 border"
-            />
+            <img src={preview} alt="Preview" className="w-40 h-40 object-cover rounded-xl mb-3 border" />
           ) : (
-            <div className="w-40 h-40 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md mb-3 text-gray-500">
+            <div className="w-40 h-40 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-xl mb-3 text-gray-400 text-sm">
               No Image
             </div>
           )}
-          <input
-            type="file"
-            name="image"
-            accept="image/*"
-            onChange={handleChange}
-            className="block text-sm text-gray-600"
-          />
+          <input type="file" name="image" accept="image/*" onChange={handleChange} className="block text-sm text-gray-600" />
         </div>
 
         {/* Name */}
         <div>
-          <label className="block text-sm font-semibold mb-1">
-            Product Name
-          </label>
+          <label className="block text-sm font-semibold mb-1">Product Name *</label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="Enter product name"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="e.g. Ashwagandha Extract Capsules"
+            className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 text-sm"
             required
           />
         </div>
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-semibold mb-1">
-            Description
-          </label>
+          <label className="block text-sm font-semibold mb-1">Short Description</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            placeholder="Enter description"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            rows="2"
+            placeholder="Brief product description (shown on product card)"
+            className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 text-sm"
           />
         </div>
 
-        {/* Price */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Price */}
+          <div>
+            <label className="block text-sm font-semibold mb-1">Price (Rs.) *</label>
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              placeholder="e.g. 1200"
+              className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 text-sm"
+              required
+            />
+          </div>
+
+          {/* Category */}
+          <div>
+            <label className="block text-sm font-semibold mb-1">Category *</label>
+            <input
+              type="text"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              placeholder="e.g. Herbal Supplements"
+              className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 text-sm"
+              required
+            />
+          </div>
+        </div>
+
+        <hr className="border-gray-200" />
+        <p className="text-sm font-bold text-gray-700">Product Details (shown on detail page)</p>
+
+        {/* Ingredients */}
         <div>
-          <label className="block text-sm font-semibold mb-1">Price</label>
-          <input
-            type="number"
-            name="price"
-            value={formData.price}
+          <label className="block text-sm font-semibold mb-1">Ingredients</label>
+          <textarea
+            name="ingredients"
+            value={formData.ingredients}
             onChange={handleChange}
-            placeholder="Enter price"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-            required
+            rows="3"
+            placeholder="e.g. Ashwagandha Root Extract 500mg, Black Pepper Extract 5mg, Vegetable Capsule Shell"
+            className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 text-sm"
           />
         </div>
 
-        {/* Category */}
+        {/* Usage */}
         <div>
-          <label className="block text-sm font-semibold mb-1">Category</label>
-          <input
-            type="text"
-            name="category"
-            value={formData.category}
+          <label className="block text-sm font-semibold mb-1">How to Use</label>
+          <textarea
+            name="usage"
+            value={formData.usage}
             onChange={handleChange}
-            placeholder="Enter category"
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-            required
+            rows="3"
+            placeholder="e.g. Take 1-2 capsules daily with warm water after meals. Best taken in the evening for stress relief."
+            className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 text-sm"
           />
         </div>
 
-        {/* Submit Button */}
+        {/* Benefits */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Benefits</label>
+          <textarea
+            name="benefits"
+            value={formData.benefits}
+            onChange={handleChange}
+            rows="3"
+            placeholder="e.g. Reduces stress & anxiety, Improves sleep quality, Boosts energy & stamina, Supports immune system"
+            className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 text-sm"
+          />
+        </div>
+
+        {/* Submit */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          disabled={loading}
+          className="w-full bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition font-semibold disabled:opacity-50"
         >
-          Add Product
+          {loading ? "Adding..." : "Add Product"}
         </button>
       </form>
     </div>

@@ -1,12 +1,11 @@
-import Forgot_Password from '@/app/Modules/Forgot_Password/Forgot_Password'
-import React from 'react'
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-const page = () => {
-  return (
-    <>
-    <Forgot_Password/>
-    </>
-  )
+export default function ForgotPasswordRedirect() {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/admin/forgot-password");
+  }, [router]);
+  return null;
 }
-
-export default page
